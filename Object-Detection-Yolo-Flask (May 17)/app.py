@@ -34,7 +34,6 @@ def annotate_image(image, results):
     return image, detected_objects
 
 def encode_image(image):
-    """Convert the annotated image to a base64-encoded string."""
     buf = io.BytesIO()
     Image.fromarray(image).save(buf, format="PNG")
     buf.seek(0)
@@ -42,7 +41,6 @@ def encode_image(image):
 
 @app.route('/images/<path:filename>')
 def serve_image(filename):
-    """Serve images from the 'images' directory."""
     return send_from_directory('images', filename)
 
 
@@ -55,7 +53,6 @@ def index():
 def upload_image():
     """Handle image upload and save to local folder with metadata."""
     file = request.files.get('image')
-    # Secure the filename and save the file
     file_path = os.path.join('images', file.filename)
     file.save(file_path)
 
@@ -101,10 +98,9 @@ def search_images():
     annotated_img,detected_objects = annotate_image(img,results)
     query = Query()
 
-    # Run detection on the uploaded image
-    # Search for images with detected objects in the database
     images = db.search(query.image_keyboards.any(detected_objects))
     return jsonify({"images": [img['file_name'] for img in images]})
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000, debug=True)
+
